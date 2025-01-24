@@ -1,69 +1,27 @@
 <template>
   <div class="canvas-tool">
     <div class="left-handler">
-      <Divider type="vertical" style="height: 20px;" />
-      <IconBack class="handler-item" :class="{ 'disable': !canUndo }" v-tooltip="'Undo (Ctrl + Z)'" @click="undo()" />
-      <IconNext class="handler-item" :class="{ 'disable': !canRedo }" v-tooltip="'Redo (Ctrl + Y)'" @click="redo()" /> 
+      <div class="title">
+        <Input 
+          class="title-input" 
+          ref="titleInputRef"
+          v-model:value="titleValue" 
+          @blur="handleUpdateTitle()" 
+          @keydown.enter="handleUpdateTitle()"
+          @keydown.esc="cancelEditTitle()"
+          v-if="editingTitle" 
+        ></Input>
+        <div 
+          class="title-text"
+          @click="startEditTitle()"
+          :title="title"
+          v-else
+        >{{ title }}</div>
+      </div>
     </div>
 
     <div class="add-element-handler">
-      <Popover trigger="click" v-model:value="textTypeSelectVisible" :offset="10">
-        <template #content>
-            <PopoverMenuItem center @click="() => { drawText(); textTypeSelectVisible = false }"><IconTextRotationNone /> Horizontal Text Box</PopoverMenuItem>
-            <PopoverMenuItem center @click="() => { drawText(true); textTypeSelectVisible = false }"><IconTextRotationDown /> Vertical Text Box</PopoverMenuItem>
-          </template>
-        <IconFontSize class="handler-item" :class="{ 'active': creatingElement?.type === 'text' }" v-tooltip="'Insert Text'" />
-      </Popover>
-      <div class="handler-item group-btn" v-tooltip="'Insert Shape'" :offset="10">
-        <Popover trigger="click" style="height: 100%;" v-model:value="shapePoolVisible" :offset="10">
-          <template #content>
-            <ShapePool @select="shape => drawShape(shape)" />
-          </template>
-          <IconGraphicDesign class="icon" :class="{ 'active': creatingCustomShape || creatingElement?.type === 'shape' }" />
-        </Popover>
-        
-        <Popover trigger="click" v-model:value="shapeMenuVisible" style="height: 100%;" :offset="10">
-          <template #content>
-            <PopoverMenuItem center @click="() => { drawCustomShape(); shapeMenuVisible = false }">Freeform Drawing</PopoverMenuItem>
-          </template>
-          <IconDown class="arrow" />
-        </Popover>
-      </div>
-      <FileInput @change="files => insertImageElement(files)">
-        <IconPicture class="handler-item" v-tooltip="'Insert Image'" />
-      </FileInput>
-      <Popover trigger="click" v-model:value="linePoolVisible" :offset="10">
-        <template #content>
-          <LinePool @select="line => drawLine(line)" />
-        </template>
-        <IconConnection class="handler-item" :class="{ 'active': creatingElement?.type === 'line' }" v-tooltip="'Insert Line'" />
-      </Popover>
-      <Popover trigger="click" v-model:value="chartPoolVisible" :offset="10">
-        <template #content>
-          <ChartPool @select="chart => { createChartElement(chart); chartPoolVisible = false }" />
-        </template>
-        <IconChartProportion class="handler-item" v-tooltip="'Insert Chart'" />
-      </Popover>
-      <Popover trigger="click" v-model:value="tableGeneratorVisible" :offset="10">
-        <template #content>
-          <TableGenerator
-            @close="tableGeneratorVisible = false"
-            @insert="({ row, col }) => { createTableElement(row, col); tableGeneratorVisible = false }"
-          />
-        </template>
-        <IconInsertTable class="handler-item" v-tooltip="'Insert Table'" />
-      </Popover>
-      <IconFormula class="handler-item" v-tooltip="'Insert Formula'" @click="latexEditorVisible = true" />
-      <Popover trigger="click" v-model:value="mediaInputVisible" :offset="10">
-        <template #content>
-          <MediaInput 
-            @close="mediaInputVisible = false"
-            @insertVideo="src => { createVideoElement(src); mediaInputVisible = false }"
-            @insertAudio="src => { createAudioElement(src); mediaInputVisible = false }"
-          />
-        </template>
-        <IconVideoTwo class="handler-item" v-tooltip="'Insert Audio/Video'" />
-      </Popover>
+    
     </div>
 
     <div class="right-handler">
@@ -82,118 +40,46 @@
         <IconDownload class="handler-item" :class="{ 'active': showSearchPanel }" v-tooltip="'Export'" @click="toggleSraechPanel()" />
       </div>
     </div>
-
-    <Modal
-      v-model:visible="latexEditorVisible" 
-      :width="880"
-    >
-      <LaTeXEditor 
-        @close="latexEditorVisible = false"
-        @update="data => { createLatexElement(data); latexEditorVisible = false }"
-      />
-    </Modal>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useMainStore, useSnapshotStore } from '@/store'
-import { getImageDataURL } from '@/utils/image'
-import type { ShapePoolItem } from '@/configs/shapes'
-import type { LinePoolItem } from '@/configs/lines'
-import useScaleCanvas from '@/hooks/useScaleCanvas'
-import useHistorySnapshot from '@/hooks/useHistorySnapshot'
-import useCreateElement from '@/hooks/useCreateElement'
+import { useMainStore, useSlidesStore } from '@/store'
 
-import ShapePool from './ShapePool.vue'
-import LinePool from './LinePool.vue'
-import ChartPool from './ChartPool.vue'
-import TableGenerator from './TableGenerator.vue'
-import MediaInput from './MediaInput.vue'
-import LaTeXEditor from '@/components/LaTeXEditor/index.vue'
-import FileInput from '@/components/FileInput.vue'
-import Modal from '@/components/Modal.vue'
-import Divider from '@/components/Divider.vue'
 import Popover from '@/components/Popover.vue'
 import PopoverMenuItem from '@/components/PopoverMenuItem.vue'
+import Input from '@/components/Input.vue'
 
 const mainStore = useMainStore()
-const { creatingElement, creatingCustomShape, showSelectPanel, showSearchPanel, showNotesPanel } = storeToRefs(mainStore)
-const { canUndo, canRedo } = storeToRefs(useSnapshotStore())
+const slidesStore = useSlidesStore()
+const { title } = storeToRefs(slidesStore)
+const { showSelectPanel, showSearchPanel, showNotesPanel } = storeToRefs(mainStore)
 
-const { redo, undo } = useHistorySnapshot()
-
-const {
-  scaleCanvas,
-  setCanvasScalePercentage,
-  resetCanvas,
-  canvasScalePercentage,
-} = useScaleCanvas()
-
-const canvasScalePresetList = [200, 150, 125, 100, 75, 50]
-const canvasScaleVisible = ref(false)
-
-const applyCanvasPresetScale = (value: number) => {
-  setCanvasScalePercentage(value)
-  canvasScaleVisible.value = false
+const startEditTitle = () => {
+  titleValue.value = title.value
+  editingTitle.value = true
+  nextTick(() => titleInputRef.value?.focus())
 }
 
-const {
-  createImageElement,
-  createChartElement,
-  createTableElement,
-  createLatexElement,
-  createVideoElement,
-  createAudioElement,
-} = useCreateElement()
-
-const insertImageElement = (files: FileList) => {
-  const imageFile = files[0]
-  if (!imageFile) return
-  getImageDataURL(imageFile).then(dataURL => createImageElement(dataURL))
+const handleUpdateTitle = () => {
+  slidesStore.setTitle(titleValue.value)
+  editingTitle.value = false
 }
 
-const shapePoolVisible = ref(false)
-const linePoolVisible = ref(false)
-const chartPoolVisible = ref(false)
-const tableGeneratorVisible = ref(false)
-const mediaInputVisible = ref(false)
-const latexEditorVisible = ref(false)
-const textTypeSelectVisible = ref(false)
-const shapeMenuVisible = ref(false)
+const cancelEditTitle = () => {
+  titleValue.value = title.value
+  editingTitle.value = false
+}
+
+const editingTitle = ref(false)
+const titleInputRef = ref<InstanceType<typeof Input>>()
+const titleValue = ref('')
+
+
 const moreVisible = ref(false)
 
-// Draw text area
-const drawText = (vertical = false) => {
-  mainStore.setCreatingElement({
-    type: 'text',
-    vertical,
-  })
-}
-
-// Draw shape area
-const drawShape = (shape: ShapePoolItem) => {
-  mainStore.setCreatingElement({
-    type: 'shape',
-    data: shape,
-  })
-  shapePoolVisible.value = false
-}
-// Draw custom polygon
-const drawCustomShape = () => {
-  mainStore.setCreatingCustomShapeState(true)
-  shapePoolVisible.value = false
-}
-
-// Draw line path
-const drawLine = (line: LinePoolItem) => {
-  mainStore.setCreatingElement({
-    type: 'line',
-    data: line,
-  })
-  linePoolVisible.value = false
-}
 
 // Open selection panel
 const toggleSelectPanel = () => {
@@ -340,4 +226,37 @@ const toggleNotesPanel = () => {
     display: none;
   }
 }
+
+.title {
+  height: 30px;
+  margin-left: 2px;
+  font-size: 13px;
+
+  .title-input {
+    width: 200px;
+    height: 100%;
+    padding-left: 0;
+    padding-right: 0;
+
+    ::v-deep(input) {
+      height: 28px;
+      line-height: 28px;
+    }
+  }
+  .title-text {
+    min-width: 20px;
+    max-width: 400px;
+    line-height: 30px;
+    padding: 0 6px;
+    border-radius: $borderRadius;
+    cursor: pointer;
+
+    @include ellipsis-oneline();
+
+    &:hover {
+      background-color: #f1f1f1;
+    }
+  }
+}
+
 </style>

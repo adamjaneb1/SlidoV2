@@ -116,10 +116,6 @@ const handleUpdateTitle = () => {
   editingTitle.value = false
 }
 
-const goLink = (url: string) => {
-  window.open(url)
-  mainMenuVisible.value = false
-}
 
 const setDialogForExport = (type: DialogForExportTypes) => {
   mainStore.setDialogForExport(type)

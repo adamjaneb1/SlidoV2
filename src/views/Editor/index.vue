@@ -5,7 +5,8 @@
       <Thumbnails class="layout-content-left" />
       <div class="layout-content-center">
         <CanvasTool class="center-top" />
-        <Canvas class="center-body" :style="{ height: `calc(100% - ${remarkHeight+ 39 + 40}px)` }" />
+        <CanvasToolTop class="center-tops" />
+        <Canvas class="center-body" :style="{ height: `calc(100% - ${remarkHeight+ 73 + 40}px)` }" />
         <CanvasToolBottom class="center-top" />
         <Remark v-if="false"
           class="center-bottom" 
@@ -53,6 +54,7 @@ import EditorHeader from './EditorHeader/index.vue'
 import Canvas from './Canvas/index.vue'
 import CanvasTool from './CanvasTool/index.vue'
 import CanvasToolBottom from './CanvasToolBottom/index.vue'
+import CanvasToolTop from './CanvasToolTop/index.vue'
 import Thumbnails from './Thumbnails/index.vue'
 import Toolbar from './Toolbar/index.vue'
 import Remark from './Remark/index.vue'
