@@ -1,7 +1,7 @@
 <template>
   <div class="canvas-tool">
     <div class="left-handler">
-      <IconInfo class="handler-item" :class="{ 'active': showSearchPanel }" v-tooltip="'Shortcuts info'" @click="toggleSraechPanel()" />
+      <IconInfo class="handler-item" :class="{ 'active': showSearchPanel }" v-tooltip="'Shortcuts info'" @click="hotkeyDrawerVisible = true" />
     </div>
 
     <div class="center-handler">
@@ -9,7 +9,7 @@
     </div>
 
     <div class="right-handler">
-      <IconPpt class="handler-item" :class="{ 'active': showSearchPanel }" v-tooltip="'Slide Show (F5)'" @click="toggleSraechPanel()" />
+      <IconPpt class="handler-item" :class="{ 'active': showSearchPanel }" v-tooltip="'Slide Show (F5)'" @click="enterScreening()" />
       <IconMinus class="handler-item viewport-size" v-tooltip="'Zoom Out Canvas (Ctrl + -)'" @click="scaleCanvas('-')" />
       <div class="zoom slider">
         <Slider 
@@ -35,6 +35,14 @@
       <IconFullScreen class="handler-item viewport-size-adaptation" v-tooltip="'Fit to Screen (Ctrl + 0)'" @click="resetCanvas()" />
     </div>
 
+    <Drawer
+      :width="320"
+      v-model:visible="hotkeyDrawerVisible"
+      placement="right"
+    >
+      <HotkeyDoc />
+      <template v-slot:title>Shortcuts</template>
+    </Drawer>
 
   </div>
 </template>
@@ -43,6 +51,7 @@
 import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSnapshotStore } from '@/store'
+import useScreening from '@/hooks/useScreening'
 import { getImageDataURL } from '@/utils/image'
 import type { ShapePoolItem } from '@/configs/shapes'
 import type { LinePoolItem } from '@/configs/lines'
@@ -50,6 +59,7 @@ import useScaleCanvas from '@/hooks/useScaleCanvas'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
 import useCreateElement from '@/hooks/useCreateElement'
 
+import HotkeyDoc from './HotkeyDoc.vue'
 import ShapePool from './ShapePool.vue'
 import LinePool from './LinePool.vue'
 import ChartPool from './ChartPool.vue'
@@ -62,12 +72,16 @@ import Divider from '@/components/Divider.vue'
 import Popover from '@/components/Popover.vue'
 import PopoverMenuItem from '@/components/PopoverMenuItem.vue'
 import Slider from '@/components/Slider.vue'
+import Drawer from '@/components/Drawer.vue'
 
 const mainStore = useMainStore()
 const { creatingElement, creatingCustomShape, showSelectPanel, showSearchPanel, showNotesPanel } = storeToRefs(mainStore)
 const { canUndo, canRedo } = storeToRefs(useSnapshotStore())
 
 const { redo, undo } = useHistorySnapshot()
+const { enterScreening, enterScreeningFromStart } = useScreening()
+
+const hotkeyDrawerVisible = ref(false)
 
 const {
   scaleCanvas,

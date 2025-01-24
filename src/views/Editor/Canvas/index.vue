@@ -9,7 +9,6 @@
     v-contextmenu="contextmenus"
     v-click-outside="removeEditorAreaFocus"
   >
-  <CanvasTools class="relative" />
     <ElementCreateSelection
       v-if="creatingElement"
       @created="data => insertElementFromCreateSelection(data)"

@@ -37,6 +37,10 @@ export default () => {
 
   const exporting = ref(false)
 
+  const importFile = (files: FileList, cover = false) => {
+    const file = files[0]
+    console.log(file)
+  }
   // Import slido file
   const importSpecificFile = (files: FileList, cover = false) => {
     const file = files[0]
@@ -538,5 +542,6 @@ export default () => {
     importSpecificFile,
     importPPTXFile,
     exporting,
+    importFile,
   }
 }

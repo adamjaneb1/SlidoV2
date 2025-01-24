@@ -1,65 +1,19 @@
 <template>
   <div class="editor-header">
     <div class="left">
-      <Popover trigger="click" placement="bottom-start" v-model:value="mainMenuVisible">
-        <template #content>
-          <PopoverMenuItem @click="openAIPPTDialog(); mainMenuVisible = false">AI Generate PPT (Beta)</PopoverMenuItem>
-          <FileInput accept="application/vnd.openxmlformats-officedocument.presentationml.presentation"  @change="files => {
-            importPPTXFile(files)
-            mainMenuVisible = false
-          }">
-            <PopoverMenuItem>Import PPTX File (Beta)</PopoverMenuItem>
-          </FileInput>
-          <FileInput accept=".slds"  @change="files => {
-            importSpecificFile(files)
-            mainMenuVisible = false
-          }">
-            <PopoverMenuItem>Import Slido File</PopoverMenuItem>
-          </FileInput>
-          <PopoverMenuItem @click="setDialogForExport('pptx')">Export File</PopoverMenuItem>
-          <PopoverMenuItem @click="resetSlides(); mainMenuVisible = false">Reset Slides</PopoverMenuItem>
-          <PopoverMenuItem @click="openMarkupPanel(); mainMenuVisible = false">Slide Type Markup</PopoverMenuItem>
-          <PopoverMenuItem @click="mainMenuVisible = false; hotkeyDrawerVisible = true">Shortcuts</PopoverMenuItem>
-        </template>
-        <div class="menu-item"><IconHamburgerButton class="icon" /></div>
-      </Popover>
-
-      <div class="title">
-        <Input 
-          class="title-input" 
-          ref="titleInputRef"
-          v-model:value="titleValue" 
-          @blur="handleUpdateTitle()" 
-          v-if="editingTitle" 
-        ></Input>
-        <div 
-          class="title-text"
-          @click="startEditTitle()"
-          :title="title"
-          v-else
-        >{{ title }}</div>
-      </div>
+      <div class="font-bold ml-2">Slido.ai</div>
+      <div class="text-sm py-1 text-gray-500 ml-3 hover:bg-gray-100 px-2 cursor-pointer">Home</div>
+      <div class="text-sm py-1 text-gray-500 ml-2 hover:bg-gray-100 px-2 cursor-pointer">Editor</div>
+      <div class="text-sm py-1 text-gray-500 ml-2 hover:bg-gray-100 px-2 cursor-pointer">Library</div>
+      <div class="text-sm py-1 text-gray-500 ml-2 hover:bg-gray-100 px-2 cursor-pointer">Explore</div>
     </div>
 
     <div class="right">
-      <div class="group-menu-item">
-        <div class="menu-item" v-tooltip="'Slide Show (F5)'" @click="enterScreening()">
-          <IconPpt class="icon" />
-        </div>
-        <Popover trigger="click" center>
-          <template #content>
-            <PopoverMenuItem @click="enterScreeningFromStart()">From Start</PopoverMenuItem>
-            <PopoverMenuItem @click="enterScreening()">From Current Slide</PopoverMenuItem>
-          </template>
-          <div class="arrow-btn"><IconDown class="arrow" /></div>
-        </Popover>
-      </div>
+     
       <div class="menu-item" v-tooltip="'AI Generate PPT'" @click="openAIPPTDialog(); mainMenuVisible = false">
         <span class="text">AI</span>
       </div>
-      <div class="menu-item" v-tooltip="'Export'" @click="setDialogForExport('pptx')">
-        <IconDownload class="icon" />
-      </div>
+
     </div>
 
     <Drawer

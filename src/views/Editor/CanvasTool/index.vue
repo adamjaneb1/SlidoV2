@@ -34,12 +34,20 @@
           </template>
           <IconMore class="handler-item" />
         </Popover>
+        <IconAttention class="handler-item" :class="{ 'active': showNotesPanel }" v-tooltip="'Markup'" @click="openMarkupPanel()" />
         <IconComment class="handler-item" :class="{ 'active': showNotesPanel }" v-tooltip="'Notes Panel'" @click="toggleNotesPanel()" />
         <IconMoveOne class="handler-item" :class="{ 'active': showSelectPanel }" v-tooltip="'Selection Pane'" @click="toggleSelectPanel()" />
+        <Divider type="vertical" style="height: 20px;" />
         <IconSearch class="handler-item" :class="{ 'active': showSearchPanel }" v-tooltip="'Find/Replace (Ctrl + F)'" @click="toggleSraechPanel()" />
-        <IconDownload class="handler-item" :class="{ 'active': showSearchPanel }" v-tooltip="'Export'" @click="toggleSraechPanel()" />
+        <Divider type="vertical" style="height: 20px;" />
+        <FileInput accept="application/vnd.openxmlformats-officedocument.presentationml.presentation,.slds"  @change="files => {
+            importSpecificFile(files)
+            mainMenuVisible = false
+          }"><IconLinkOne class="handler-item" :class="{ 'active': showSearchPanel }" v-tooltip="'Import'"  /></FileInput>
+        <IconDownload class="handler-item" :class="{ 'active': showSearchPanel }" v-tooltip="'Export'" @click="setDialogForExport('pptx')" />
       </div>
     </div>
+    <FullscreenSpin :loading="exporting" tip="Importing..." />
   </div>
 </template>
 
@@ -47,15 +55,29 @@
 import { nextTick, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore } from '@/store'
-
+import useImport from '@/hooks/useImport'
+import type { DialogForExportTypes } from '@/types/export'
 import Popover from '@/components/Popover.vue'
 import PopoverMenuItem from '@/components/PopoverMenuItem.vue'
 import Input from '@/components/Input.vue'
+import Divider from '@/components/Divider.vue'
+import FullscreenSpin from '@/components/FullscreenSpin.vue'
+import FileInput from '@/components/FileInput.vue'
 
 const mainStore = useMainStore()
 const slidesStore = useSlidesStore()
 const { title } = storeToRefs(slidesStore)
 const { showSelectPanel, showSearchPanel, showNotesPanel } = storeToRefs(mainStore)
+const { importSpecificFile, importPPTXFile, exporting, importFile } = useImport()
+
+const setDialogForExport = (type: DialogForExportTypes) => {
+  mainStore.setDialogForExport(type)
+  mainMenuVisible.value = false
+}
+
+const openMarkupPanel = () => {
+  mainStore.setMarkupPanelState(true)
+}
 
 const startEditTitle = () => {
   titleValue.value = title.value
@@ -79,7 +101,7 @@ const titleValue = ref('')
 
 
 const moreVisible = ref(false)
-
+const mainMenuVisible = ref(false)
 
 // Open selection panel
 const toggleSelectPanel = () => {
