@@ -25,7 +25,8 @@ import {
   RiTextDirectionL,
   IoShapesOutline,
   CoTextShapes,
-  RiMarkupLine 
+  RiMarkupLine,
+  SiCodemagic,
 } from 'oh-vue-icons/icons'
 
 import {
@@ -126,6 +127,7 @@ import {
   Magic,
   HighLight,
   Download,
+  Upload,
   IndentLeft,
   IndentRight,
   VerticalSpacingBetweenItems,
@@ -182,7 +184,8 @@ addIcons(
   RiTextDirectionL,
   IoShapesOutline,
   CoTextShapes,
-  RiMarkupLine  
+  RiMarkupLine,
+  SiCodemagic,
 )
 
 export interface Icons {
@@ -287,6 +290,7 @@ export const icons: Icons = {
   IconMagic: Magic,
   IconHighLight: HighLight,
   IconDownload: Download,
+  IconUpload: Upload,
   IconIndentLeft: IndentLeft,
   IconIndentRight: IndentRight,
   IconVerticalSpacingBetweenItems: VerticalSpacingBetweenItems,

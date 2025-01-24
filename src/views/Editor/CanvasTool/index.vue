@@ -36,7 +36,7 @@
         <FileInput accept="application/vnd.openxmlformats-officedocument.presentationml.presentation,.slds"  @change="files => {
             importSpecificFile(files)
             mainMenuVisible = false
-          }"><IconLinkOne class="handler-item"  v-tooltip="'Import'"  /></FileInput>
+          }"><IconUpload class="handler-item"  v-tooltip="'Import'"  /></FileInput>
         <IconDownload class="handler-item" v-tooltip="'Export'" @click="setDialogForExport('pptx')" />
       </div>
     </div>
