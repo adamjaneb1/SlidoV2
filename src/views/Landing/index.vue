@@ -57,7 +57,7 @@ Examples
             alt="BotSlides" 
             class="w-full h-full object-contain motion-scale-in-[0.5] motion-translate-x-in-[-120%] motion-translate-y-in-[-60%] motion-opacity-in-[33%] motion-rotate-in-[-1080deg] motion-blur-in-[10px] motion-delay-[0.38s]/scale motion-duration-[0.38s]/opacity motion-duration-[1.20s]/rotate motion-duration-[0.15s]/blur motion-delay-[0.60s]/blur motion-ease-spring-bouncier"
           />
-          <h1 class="text-8xl text-center font-bold w-full motion-opacity-in-[0%] motion-duration-[1.50s] motion-duration-[0.42s]/opacity motion-delay-[0.5s]/opacity">Slido</h1>
+          <h1 class="text-8xl text-center font-bold w-full motion-opacity-in-[0%] motion-duration-[1.50s] motion-duration-[0.42s]/opacity motion-delay-[0.5s]/opacity">Slido.ai</h1>
         </div>
       </div>
     </div>

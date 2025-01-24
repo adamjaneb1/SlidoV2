@@ -2,10 +2,26 @@
   <div class="editor-header">
     <div class="left">
       <div class="font-bold ml-2">Slido.ai</div>
-      <div class="text-sm py-1 text-gray-500 ml-3 hover:bg-gray-100 px-2 cursor-pointer">Home</div>
-      <div class="text-sm py-1 text-gray-500 ml-2 hover:bg-gray-100 px-2 cursor-pointer">Editor</div>
-      <div class="text-sm py-1 text-gray-500 ml-2 hover:bg-gray-100 px-2 cursor-pointer">Library</div>
-      <div class="text-sm py-1 text-gray-500 ml-2 hover:bg-gray-100 px-2 cursor-pointer">Explore</div>
+      <div 
+        class="text-sm py-1 ml-3 px-2 cursor-pointer"
+        :class="[activeView === 'home' ? 'active-nav-item' : 'text-gray-500 hover:bg-gray-100']"
+        @click="setActiveView('home')"
+      >Home</div>
+      <div 
+        class="text-sm py-1 ml-2 px-2 cursor-pointer"
+        :class="[activeView === 'editor' ? 'active-nav-item' : 'text-gray-500 hover:bg-gray-100']"
+        @click="setActiveView('editor')"
+      >Editor</div>
+      <div 
+        class="text-sm py-1 ml-2 px-2 cursor-pointer"
+        :class="[activeView === 'library' ? 'active-nav-item' : 'text-gray-500 hover:bg-gray-100']"
+        @click="setActiveView('library')"
+      >Library</div>
+      <div 
+        class="text-sm py-1 ml-2 px-2 cursor-pointer"
+        :class="[activeView === 'explore' ? 'active-nav-item' : 'text-gray-500 hover:bg-gray-100']"
+        @click="setActiveView('explore')"
+      >Explore</div>
     </div>
 
     <div class="right">
@@ -30,19 +46,19 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref } from 'vue'
+import { nextTick, ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore } from '@/store'
 import useScreening from '@/hooks/useScreening'
 import useImport from '@/hooks/useImport'
 import useSlideHandler from '@/hooks/useSlideHandler'
-import type { DialogForExportTypes } from '@/types/export'
-
 import HotkeyDoc from './HotkeyDoc.vue'
+import type { DialogForExportTypes } from '@/types/export'
 import FileInput from '@/components/FileInput.vue'
 import FullscreenSpin from '@/components/FullscreenSpin.vue'
 import Drawer from '@/components/Drawer.vue'
-import Input from '@/components/Input.vue'
+import type Input from '@/components/Input.vue'
 import Popover from '@/components/Popover.vue'
 import PopoverMenuItem from '@/components/PopoverMenuItem.vue'
 
@@ -53,7 +69,26 @@ const { enterScreening, enterScreeningFromStart } = useScreening()
 const { importSpecificFile, importPPTXFile, exporting } = useImport()
 const { resetSlides } = useSlideHandler()
 
+const router = useRouter()
+const activeView = ref('home')
 const mainMenuVisible = ref(false)
+
+const setActiveView = (view: string) => {
+  activeView.value = view
+  if (view === 'home') {
+    router.push('/')
+  } 
+  else if (view === 'editor') {
+    router.push('/editor')
+  } 
+  else if (view === 'library') {
+    router.push('/library')
+  } 
+  else if (view === 'explore') {
+    router.push('/explore')
+  }
+}
+
 const hotkeyDrawerVisible = ref(false)
 const editingTitle = ref(false)
 const titleInputRef = ref<InstanceType<typeof Input>>()
@@ -178,5 +213,10 @@ const openAIPPTDialog = () => {
 .github-link {
   display: inline-block;
   height: 30px;
+}
+
+.active-nav-item {
+  color: $themeColor;
+  background-color: rgba($themeColor, 0.1);
 }
 </style>

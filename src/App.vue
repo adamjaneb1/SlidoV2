@@ -1,16 +1,23 @@
 <template>
   <template v-if="slides.length">
     <Screen v-if="screening" />
-    <Editor v-else-if="_isPC" />
+    <template v-else-if="_isPC">
+      <EditorHeader />
+      <template v-if="currentRoute === '/'">
+        <Landing />
+      </template>
+      <template v-else>
+        <Editor />
+      </template>
+    </template>
     <Mobile v-else />
   </template>
-    <FullscreenSpin tip="Data is initializing, please wait..." v-else  loading :mask="false" />
+  <FullscreenSpin tip="Data is initializing, please wait..." v-else loading :mask="false" />
 </template>
 
-
-
 <script lang="ts" setup>
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useScreenStore, useMainStore, useSnapshotStore, useSlidesStore } from '@/store'
 import { LOCALSTORAGE_KEY_DISCARDED_DB } from '@/configs/storage'
@@ -20,11 +27,15 @@ import type { Slide } from '@/types/slides'
 import api from '@/services'
 
 import Editor from './views/Editor/index.vue'
+import Landing from './views/Landing/index.vue'
 import Screen from './views/Screen/index.vue'
 import Mobile from './views/Mobile/index.vue'
+import EditorHeader from './views/Editor/EditorHeader/index.vue'
 import FullscreenSpin from '@/components/FullscreenSpin.vue'
 
 const _isPC = isPC()
+const route = useRoute()
+const currentRoute = computed(() => route.path)
 
 const mainStore = useMainStore()
 const slidesStore = useSlidesStore()
@@ -64,5 +75,7 @@ window.addEventListener('unload', () => {
 <style lang="scss">
 #app {
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 </style>

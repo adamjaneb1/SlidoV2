@@ -1,6 +1,5 @@
 <template>
   <div class="slidoai-editor">
-    <EditorHeader class="layout-header" />
     <div class="layout-content">
       <Thumbnails class="layout-content-left" />
       <div class="layout-content-center">
@@ -50,7 +49,6 @@ import { useMainStore } from '@/store'
 import useGlobalHotkey from '@/hooks/useGlobalHotkey'
 import usePasteEvent from '@/hooks/usePasteEvent'
 
-import EditorHeader from './EditorHeader/index.vue'
 import Canvas from './Canvas/index.vue'
 import CanvasTool from './CanvasTool/index.vue'
 import CanvasToolBottom from './CanvasToolBottom/index.vue'
@@ -79,13 +77,10 @@ usePasteEvent()
 
 <style lang="scss" scoped>
 .slidoai-editor {
-  height: 100%;
-}
-.layout-header {
-  height: 40px;
+  height: calc(100% - 31px);
 }
 .layout-content {
-  height: calc(100% - 40px);
+  height: 100%;
   display: flex;
 }
 .layout-content-left {
