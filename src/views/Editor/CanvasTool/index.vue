@@ -26,15 +26,8 @@
 
     <div class="right-handler">
       <div class="more">
-        <Popover class="more-icon" trigger="click" v-model:value="moreVisible" :offset="10">
-          <template #content>
-            <PopoverMenuItem center @click="toggleNotesPanel(); moreVisible = false">Notes Panel</PopoverMenuItem>
-            <PopoverMenuItem center @click="toggleSelectPanel(); moreVisible = false">Selection Pane</PopoverMenuItem>
-            <PopoverMenuItem center @click="toggleSraechPanel(); moreVisible = false">Find & Replace</PopoverMenuItem>
-          </template>
-          <IconMore class="handler-item" />
-        </Popover>
-        <IconAttention class="handler-item" :class="{ 'active': showNotesPanel }" v-tooltip="'Markup'" @click="openMarkupPanel()" />
+        
+        <IconLabel class="handler-item" :class="{ 'active': showNotesPanel }" v-tooltip="'Markup'" @click="openMarkupPanel()" />
         <IconComment class="handler-item" :class="{ 'active': showNotesPanel }" v-tooltip="'Notes Panel'" @click="toggleNotesPanel()" />
         <IconMoveOne class="handler-item" :class="{ 'active': showSelectPanel }" v-tooltip="'Selection Pane'" @click="toggleSelectPanel()" />
         <Divider type="vertical" style="height: 20px;" />
@@ -43,8 +36,8 @@
         <FileInput accept="application/vnd.openxmlformats-officedocument.presentationml.presentation,.slds"  @change="files => {
             importSpecificFile(files)
             mainMenuVisible = false
-          }"><IconLinkOne class="handler-item" :class="{ 'active': showSearchPanel }" v-tooltip="'Import'"  /></FileInput>
-        <IconDownload class="handler-item" :class="{ 'active': showSearchPanel }" v-tooltip="'Export'" @click="setDialogForExport('pptx')" />
+          }"><IconLinkOne class="handler-item"  v-tooltip="'Import'"  /></FileInput>
+        <IconDownload class="handler-item" v-tooltip="'Export'" @click="setDialogForExport('pptx')" />
       </div>
     </div>
     <FullscreenSpin :loading="exporting" tip="Importing..." />

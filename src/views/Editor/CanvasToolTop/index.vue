@@ -1,8 +1,8 @@
 <template>
   <div class="canvas-tool bg-gray-50">
     <div class="left-handler mt-1">
-        <IconBack class="handler-item  hover:scale-110" :class="{ 'disable': !canUndo }" v-tooltip="'Undo (Ctrl + Z)'" @click="undo()" />
-      <IconNext class="handler-item hover:scale-110" :class="{ 'disable': !canRedo }" v-tooltip="'Redo (Ctrl + Y)'" @click="redo()" /> 
+        <IconUndo class="handler-item " :class="{ 'disable': !canUndo }" v-tooltip="'Undo (Ctrl + Z)'" @click="undo()" />
+      <IconRedo class="handler-item " :class="{ 'disable': !canRedo }" v-tooltip="'Redo (Ctrl + Y)'" @click="redo()" /> 
     </div>
 
     <div class="add-element-handler">
@@ -95,6 +95,7 @@ import Divider from '@/components/Divider.vue'
 import Popover from '@/components/Popover.vue'
 import PopoverMenuItem from '@/components/PopoverMenuItem.vue'
 import Input from '@/components/Input.vue'
+import { IoShapes } from "oh-vue-icons/icons";
 
 const mainStore = useMainStore()
 const slidesStore = useSlidesStore()

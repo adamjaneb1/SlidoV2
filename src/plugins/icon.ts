@@ -1,6 +1,33 @@
 // https://iconpark.bytedance.com/official
 
 import type { App } from 'vue'
+import { OhVueIcon, addIcons } from 'oh-vue-icons'
+import {
+  RiAddLine,
+  RiSubtractLine,
+  RiArrowLeftLine,
+  RiArrowRightLine,
+  RiMore2Fill,
+  RiSearchLine,
+  RiSettings4Line,
+  RiDeleteBin6Line,
+  RiSaveLine,
+  RiDownload2Line,
+  RiFontSize2,
+  RiShapeLine,
+  RiPencilLine,
+  RiImageLine,
+  RiLinkM,
+  RiBarChartLine,
+  RiTableLine,
+  RiFunctionLine,
+  RiText,
+  RiTextDirectionL,
+  IoShapesOutline,
+  CoTextShapes,
+  RiMarkupLine 
+} from 'oh-vue-icons/icons'
+
 import {
   PlayOne,
   FullScreenPlay,
@@ -126,7 +153,37 @@ import {
   User,
   Switch,
   More,
+  Label,
+  Redo,
+  MagicWand,
 } from '@icon-park/vue-next'
+
+// Add oh-vue-icons
+addIcons(
+  RiAddLine,
+  RiSubtractLine,
+  RiArrowLeftLine,
+  RiArrowRightLine,
+  RiMore2Fill,
+  RiSearchLine,
+  RiSettings4Line,
+  RiDeleteBin6Line,
+  RiSaveLine,
+  RiDownload2Line,
+  RiFontSize2,
+  RiShapeLine,
+  RiPencilLine,
+  RiImageLine,
+  RiLinkM,
+  RiBarChartLine,
+  RiTableLine,
+  RiFunctionLine,
+  RiText,
+  RiTextDirectionL,
+  IoShapesOutline,
+  CoTextShapes,
+  RiMarkupLine  
+)
 
 export interface Icons {
   [key: string]: typeof PlayOne
@@ -257,12 +314,18 @@ export const icons: Icons = {
   IconUser: User,
   IconSwitch: Switch,
   IconMore: More,
+  IconLabel: Label,
+  IconRedo: Redo,
+  IconMagicWand: MagicWand,
 }
 
 export default {
   install(app: App) {
+    // Register icon-park icons
     for (const key of Object.keys(icons)) {
       app.component(key, icons[key])
     }
+    // Register oh-vue-icons component
+    app.component('v-icon', OhVueIcon)
   }
 }

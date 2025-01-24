@@ -109,8 +109,6 @@ import { injectKeySlideScale } from '@/types/injectKey'
 import { removeAllRanges } from '@/utils/selection'
 import { KEYS } from '@/configs/hotkey'
 
-import CanvasTools from '../CanvasTools/index.vue'
-
 import useViewportSize from './hooks/useViewportSize'
 import useMouseSelection from './hooks/useMouseSelection'
 import useDropImageOrText from './hooks/useDropImageOrText'
