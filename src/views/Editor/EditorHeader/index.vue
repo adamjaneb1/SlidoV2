@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, computed } from 'vue'
+import { nextTick, ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore } from '@/store'
@@ -70,8 +70,15 @@ const { importSpecificFile, importPPTXFile, exporting } = useImport()
 const { resetSlides } = useSlideHandler()
 
 const router = useRouter()
-const activeView = ref('home')
+const activeView = ref(router.currentRoute.value.name as string)
 const mainMenuVisible = ref(false)
+
+// Watch for route changes
+watch(() => router.currentRoute.value.name, (newRoute) => {
+  if (newRoute) {
+    activeView.value = newRoute as string
+  }
+})
 
 const setActiveView = (view: string) => {
   activeView.value = view
