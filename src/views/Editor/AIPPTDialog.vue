@@ -1,10 +1,10 @@
 <template>
   <div class="aippt-dialog">
     <div class="header">
-      <span class="title">AIPPT</span>
-      <span class="subtite" v-if="step === 'template'">Select a suitable template below to start generating PPT</span>
-      <span class="subtite" v-else-if="step === 'outline'">Review and confirm the content outline below, then select a template</span>
-      <span class="subtite" v-else>Enter your PPT topic below and provide additional information such as industry, position, subject, purpose, etc.</span>
+      <span class="title">Write a prompt to generate contents</span>
+      <span class="subtite" v-if="step === 'template'">Select a template to start generating slides</span>
+      <span class="subtite" v-else-if="step === 'outline'">Review and confirm the content outline below</span>
+      <span class="subtite" v-else>Enter a topic below, and provide additional information such as industry, position, subject, purpose, etc.</span>
     </div>
     
     <template v-if="step === 'setup'">
@@ -17,8 +17,8 @@
       >
         <template #suffix>
           <span class="count">{{ keyword.length }} / 50</span>
-          <span class="language" v-tooltip="'Switch language'" @click="language = language === 'zh' ? 'en' : 'zh'">{{ language === 'zh' ? 'CN' : 'EN' }}</span>
-          <div class="submit" type="primary" @click="createOutline()"><IconSend class="icon" /> AI Generate</div>
+          
+          <div class="submit p-2" type="primary" @click="createOutline()"><IconSend class="icon" /></div>
         </template>
       </Input>
       <div class="recommends">
@@ -68,7 +68,7 @@ import FullscreenSpin from '@/components/FullscreenSpin.vue'
 const mainStore = useMainStore()
 const { AIPPT } = useAIPPT()
 
-const language = ref<'zh' | 'en'>('zh')
+const language = ref<'zh' | 'en'>('en')
 const keyword = ref('')
 const outline = ref('')
 const selectedTemplate = ref('template_1')
