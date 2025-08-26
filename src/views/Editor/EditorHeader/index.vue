@@ -2,26 +2,6 @@
   <div class="editor-header">
     <div class="left">
       <div class="font-bold ml-2">Slido.ai</div>
-      <div 
-        class="text-sm py-1 ml-3 px-2 cursor-pointer"
-        :class="[activeView === 'home' ? 'active-nav-item' : 'text-gray-500 hover:bg-gray-100']"
-        @click="setActiveView('home')"
-      >Home</div>
-      <div 
-        class="text-sm py-1 ml-2 px-2 cursor-pointer"
-        :class="[activeView === 'editor' ? 'active-nav-item' : 'text-gray-500 hover:bg-gray-100']"
-        @click="setActiveView('editor')"
-      >Editor</div>
-      <div 
-        class="text-sm py-1 ml-2 px-2 cursor-pointer"
-        :class="[activeView === 'library' ? 'active-nav-item' : 'text-gray-500 hover:bg-gray-100']"
-        @click="setActiveView('library')"
-      >Library</div>
-      <div 
-        class="text-sm py-1 ml-2 px-2 cursor-pointer"
-        :class="[activeView === 'explore' ? 'active-nav-item' : 'text-gray-500 hover:bg-gray-100']"
-        @click="setActiveView('explore')"
-      >Explore</div>
     </div>
 
     <div class="right">
@@ -46,8 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, computed, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { nextTick, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore } from '@/store'
 import useScreening from '@/hooks/useScreening'
@@ -69,32 +48,7 @@ const { enterScreening, enterScreeningFromStart } = useScreening()
 const { importSpecificFile, importPPTXFile, exporting } = useImport()
 const { resetSlides } = useSlideHandler()
 
-const router = useRouter()
-const activeView = ref(router.currentRoute.value.name as string)
 const mainMenuVisible = ref(false)
-
-// Watch for route changes
-watch(() => router.currentRoute.value.name, (newRoute) => {
-  if (newRoute) {
-    activeView.value = newRoute as string
-  }
-})
-
-const setActiveView = (view: string) => {
-  activeView.value = view
-  if (view === 'home') {
-    router.push('/')
-  } 
-  else if (view === 'editor') {
-    router.push('/editor')
-  } 
-  else if (view === 'library') {
-    router.push('/library')
-  } 
-  else if (view === 'explore') {
-    router.push('/explore')
-  }
-}
 
 const hotkeyDrawerVisible = ref(false)
 const editingTitle = ref(false)

@@ -5,23 +5,12 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: () => import('@/views/Landing/index.vue')
+      redirect: '/editor'
     },
     {
       path: '/editor',
       name: 'editor',
       component: () => import('@/views/Editor/index.vue')
-    },
-    {
-      path: '/library',
-      name: 'library',
-      component: () => import('@/views/Landing/index.vue')
-    },
-    {
-      path: '/explore',
-      name: 'explore',
-      component: () => import('@/views/Landing/index.vue')
     }
   ]
 })
